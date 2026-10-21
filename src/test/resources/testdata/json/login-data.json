@@ -1,0 +1,10 @@
+
+{
+  "Login": [
+    {
+      "ScenarioName": "Login with valid credentials",
+      "Username": "Admin",
+      "Password": "admin123"
+    }
+  ]
+}
