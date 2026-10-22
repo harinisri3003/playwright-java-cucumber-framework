@@ -47,11 +47,8 @@ public class LoginSteps {
     @When("the user logs into the application with user credentials")
     public void logsInWithValidCredentials() {
         try {
-            String scenarioName = testContext.getScenarioName();
-
-            // Read test data from the JSON file
             Map<String, String> testData =
-                    JsonDataManager.getTestData("Login", scenarioName);
+                    JsonDataManager.getLoginCredentials();
 
             String user = testData.get("Username");
             String pass = testData.get("Password");
@@ -59,10 +56,7 @@ public class LoginSteps {
             loginPage.enterCredentials(user, pass);
             loginPage.clickLogin();
 
-            logger.info(
-                    "User logs in to application using user name: {}, password: {}",
-                    user, pass
-            );
+            logger.info("User logged in successfully with username: {}", user);
 
             tc.attachStepArtifacts(stepStatus.PASSED);
 
@@ -144,6 +138,20 @@ public class LoginSteps {
         Assert.assertTrue(
             loginPage.isRequiredFieldValidationDisplayed(),
             "Required field validation was not displayed!"
+        );
+    }
+    
+    @When("the user logs out")
+    public void userLogsOut() {
+        dashboardPage.clickProfileMenu();
+        dashboardPage.clickLogout();
+    }
+
+    @Then("the user should be redirected to the login page")
+    public void verifyLoginPageAfterLogout() {
+        Assert.assertTrue(
+            loginPage.isLoginPageVisible(),
+            "User was not redirected to the login page!"
         );
     }
 }

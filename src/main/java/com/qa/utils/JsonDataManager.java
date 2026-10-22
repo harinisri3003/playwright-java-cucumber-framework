@@ -53,4 +53,8 @@ public class JsonDataManager {
                     "Failed to load JSON test data: " + e.getMessage(), e);
         }
     }
+    
+    public static Map<String, String> getLoginCredentials() {
+        return getTestData("Login", "Login with valid credentials");
+    }
 }

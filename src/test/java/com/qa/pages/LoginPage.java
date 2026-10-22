@@ -43,5 +43,9 @@ public class LoginPage extends BasePage{
     public boolean isRequiredFieldValidationDisplayed() {
         return page.locator(".oxd-input-field-error-message").count() > 0;
     }
+    
+    public boolean isLoginPageVisible() {
+        return elementUtils.isElementVisible(usernameField);
+    }
 
 }

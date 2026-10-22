@@ -1,6 +1,7 @@
 package com.qa.pages;
 
 import org.slf4j.Logger;
+import com.microsoft.playwright.Page;
 import org.slf4j.LoggerFactory;
 
 import com.qa.utils.ElementUtils;
@@ -14,6 +15,14 @@ public class DashboardPage extends BasePage {
             "//h6[text()='Dashboard']",
             ".oxd-topbar-header-breadcrumb-module"
     };
+    
+    private String[] profileMenu = {
+    	    ".oxd-userdropdown-tab"
+    	};
+
+    	private String[] logoutButton = {
+    	    "//a[text()='Logout']"
+    	};
 
     // Constructor receiving the 'Injected' utility
     public DashboardPage(ElementUtils elementUtils) {
@@ -27,5 +36,13 @@ public class DashboardPage extends BasePage {
 
     public String getHeaderText() {
         return elementUtils.getElementText(dashboardHeader);
+    }
+    
+    public void clickProfileMenu() {
+        elementUtils.clickElement(profileMenu);
+    }
+
+    public void clickLogout() {
+        elementUtils.clickElement(logoutButton);
     }
 }

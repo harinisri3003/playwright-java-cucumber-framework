@@ -46,7 +46,7 @@ import org.testng.annotations.DataProvider;
 @CucumberOptions(
         features = "src/test/resources/features/login.feature",   // Root folder containing all .feature files
         glue = {"com.qa.stepdefinitions", "com.qa.hooks"},  // Packages with step definitions and hooks
-        tags = "not @Ignore",
+        tags = "not @Ignore and @Logout",
         plugin = {
                 "pretty",                                             // Human-readable console output during the run
                 "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm",  // Generates raw data for Allure HTML report

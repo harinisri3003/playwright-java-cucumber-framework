@@ -18,3 +18,9 @@ Feature: User Login
   Scenario: Login with invalid password
     When the user logs into the application with username "Admin" and password "WrongPass123"
     Then the user should see the "Invalid credentials" error message
+    
+  @Logout
+  Scenario: Logout successfully
+    When the user logs into the application with user credentials
+    And the user logs out
+    Then the user should be redirected to the login page
