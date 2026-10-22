@@ -40,7 +40,7 @@ public class LoginSteps {
 
     @Given("the user is on the login page")
     public void navigateToLoginPage() {
-        loginPage.navigetToApplication();
+    		loginPage.navigateToApplication();
         logger.info("User navigated to application.");
     }
 

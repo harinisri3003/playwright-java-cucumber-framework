@@ -1,4 +1,3 @@
-
 package com.qa.utils;
 
 import com.microsoft.playwright.Locator;
@@ -6,6 +5,7 @@ import com.microsoft.playwright.Page;
 import com.microsoft.playwright.TimeoutError;
 import com.microsoft.playwright.options.LoadState;
 import com.microsoft.playwright.options.WaitForSelectorState;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,16 +18,40 @@ public class ElementUtils {
 
     public ElementUtils(Page page) {
         if (page == null) {
-            throw new IllegalArgumentException("Page must not be null.");
+            throw new IllegalArgumentException(
+                    "Page must not be null."
+            );
         }
         this.page = page;
     }
 
     private double getTimeout() {
-        return Double.parseDouble(
-                ConfigLoader.getInstance()
-                        .getOptionalProp("timeout.global.wait")
-        );
+        String configuredTimeout = ConfigLoader.getInstance()
+                .getOptionalProp("timeout.global.wait");
+
+        if (configuredTimeout == null || configuredTimeout.isBlank()) {
+            throw new IllegalStateException(
+                    "Missing configuration: timeout.global.wait"
+            );
+        }
+
+        try {
+            double timeout = Double.parseDouble(configuredTimeout);
+
+            if (!Double.isFinite(timeout) || timeout <= 0) {
+                throw new IllegalStateException(
+                        "timeout.global.wait must be a positive number."
+                );
+            }
+
+            return timeout;
+        } catch (NumberFormatException e) {
+            throw new IllegalStateException(
+                    "Invalid configuration for timeout.global.wait: "
+                            + configuredTimeout,
+                    e
+            );
+        }
     }
 
     private void validateSelectors(String action, String... selectors) {
@@ -36,110 +60,107 @@ public class ElementUtils {
                     "At least one selector is required for " + action + "."
             );
         }
-    }
-
-    // CLICK
-
-    public void clickElement(String... selectors) {
-        validateSelectors("clickElement", selectors);
-
-        RuntimeException lastException = null;
 
         for (String selector : selectors) {
-            try {
-                page.locator(selector).click();
-                logger.debug("Clicked element using selector: {}", selector);
-                return;
-            } catch (RuntimeException e) {
-                lastException = e;
-                logger.debug("Click failed for selector: {}", selector);
+            if (selector == null || selector.isBlank()) {
+                throw new IllegalArgumentException(
+                        "Selectors must not be null or blank for "
+                                + action + "."
+                );
             }
         }
-
-        throw new RuntimeException(
-                "Unable to click element using selectors: "
-                        + String.join(", ", selectors),
-                lastException
-        );
     }
 
-    // FILL TEXT
+    private Locator getLocator(String... selectors) {
+        validateSelectors("getLocator", selectors);
 
-    public void enterText(String value, String... selectors) {
-        validateSelectors("enterText", selectors);
-
-        RuntimeException lastException = null;
-
-        for (String selector : selectors) {
-            try {
-                page.locator(selector).fill(value);
-                logger.debug("Filled text field using selector: {}", selector);
-                return;
-            } catch (RuntimeException e) {
-                lastException = e;
-                logger.debug("Text entry failed for selector: {}", selector);
-            }
-        }
-
-        throw new RuntimeException(
-                "Unable to enter text using selectors: "
-                        + String.join(", ", selectors),
-                lastException
+        double timeoutPerSelector = Math.max(
+                500,
+                getTimeout() / selectors.length
         );
-    }
-
-    // GET TEXT
-
-    public String getElementText(String... selectors) {
-        validateSelectors("getElementText", selectors);
-
-        RuntimeException lastException = null;
 
         for (String selector : selectors) {
+            Locator locator = page.locator(selector).first();
+
             try {
-                Locator locator = page.locator(selector);
                 locator.waitFor(
                         new Locator.WaitForOptions()
                                 .setState(WaitForSelectorState.VISIBLE)
-                                .setTimeout(getTimeout())
+                                .setTimeout(timeoutPerSelector)
                 );
 
-                return locator.innerText().trim();
-            } catch (RuntimeException e) {
-                lastException = e;
-                logger.debug("Text retrieval failed for selector: {}", selector);
+                return locator;
+
+            } catch (TimeoutError e) {
+                logger.debug("Selector not visible, trying next fallback: {}", selector
+                );
             }
         }
 
-        throw new RuntimeException(
-                "Unable to retrieve text using selectors: "
-                        + String.join(", ", selectors),
-                lastException
+        throw new TimeoutError(
+                "No visible element found for selectors: "
+                        + String.join(", ", selectors)
         );
     }
 
-    // VISIBILITY
+    public void clickElement(String... selectors) {
+        Locator locator = getLocator(selectors);
+        locator.click();
+
+        logger.debug("Clicked element using selector: {}", selectors[0]);
+    }
+
+    public void enterText(String value, String... selectors) {
+        if (value == null) {
+            throw new IllegalArgumentException(
+                    "Text value must not be null."
+            );
+        }
+
+        Locator locator = getLocator(selectors);
+        locator.fill(value);
+
+        logger.debug("Filled text field using selector: {}", selectors[0]);
+    }
+
+    public String getElementText(String... selectors) {
+        Locator locator = getLocator(selectors);
+
+        locator.waitFor(
+                new Locator.WaitForOptions()
+                        .setState(WaitForSelectorState.VISIBLE)
+                        .setTimeout(getTimeout())
+        );
+
+        return locator.innerText().trim();
+    }
 
     public boolean isElementVisible(String... selectors) {
         validateSelectors("isElementVisible", selectors);
 
+        double timeoutPerSelector = Math.max(
+                500,
+                getTimeout() / selectors.length
+        );
+
         for (String selector : selectors) {
             try {
-                page.locator(selector).waitFor(
+                page.locator(selector).first().waitFor(
                         new Locator.WaitForOptions()
                                 .setState(WaitForSelectorState.VISIBLE)
-                                .setTimeout(getTimeout())
+                                .setTimeout(timeoutPerSelector)
                 );
+
                 return true;
+
             } catch (TimeoutError e) {
-                logger.debug("Element did not become visible: {}", selector);
+                logger.debug("Element not visible, trying next selector: {}", selector
+                );
             }
         }
 
         return false;
     }
-
-    // URL WAIT
 
     public void waitForPageURL(String urlPart) {
         if (urlPart == null || urlPart.isBlank()) {
@@ -149,17 +170,13 @@ public class ElementUtils {
         }
 
         page.waitForURL(
-                url -> url.toLowerCase().contains(urlPart.toLowerCase()),
+                url -> url.toLowerCase().contains(
+                        urlPart.toLowerCase()
+                ),
                 new Page.WaitForURLOptions().setTimeout(getTimeout())
         );
     }
 
-    // PAGE LOAD
-
-    /**
-     * Wait for DOMContentLoaded when a test explicitly requires it.
-     * Do not call this after every click; many interactions do not navigate.
-     */
     public void waitForPageLoad() {
         page.waitForLoadState(
                 LoadState.DOMCONTENTLOADED,
@@ -167,10 +184,6 @@ public class ElementUtils {
         );
     }
 
-    /**
-     * Wait for the document body to be visible.
-     * For dynamic content, wait for the specific expected element or state.
-     */
     public void waitForPageStable() {
         page.locator("body").waitFor(
                 new Locator.WaitForOptions()
@@ -178,8 +191,6 @@ public class ElementUtils {
                         .setTimeout(getTimeout())
         );
     }
-
-    // PAGE INFO
 
     public String getPageTitle() {
         return page.title();
