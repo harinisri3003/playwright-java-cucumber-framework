@@ -44,7 +44,7 @@ import org.testng.annotations.DataProvider;
  *   Smoke runs a smaller, faster set of scenarios focused on critical paths.
  */
 @CucumberOptions(
-		features = "src/test/resources/features/EmployeeManagement.feature",   // Root folder containing all .feature files
+		features = "src/test/resources/features/UserManagement.feature",   // Root folder containing all .feature files
         glue = {"com.qa.stepdefinitions", "com.qa.hooks"},  // Packages with step definitions and hooks
         tags = "not @Ignore",
         plugin = {
