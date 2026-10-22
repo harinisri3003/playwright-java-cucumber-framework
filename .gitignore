@@ -61,3 +61,11 @@ Thumbs.db
 
 # Allure history folder (updates automatically during runs)
 allure-history-backup/history/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+
+# Playwright trace output
+test-output/traces/
