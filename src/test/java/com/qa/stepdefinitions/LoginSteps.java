@@ -10,6 +10,7 @@ import com.qa.utils.JsonDataManager;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
@@ -40,7 +41,7 @@ public class LoginSteps {
 
     @Given("the user is on the login page")
     public void navigateToLoginPage() {
-    		loginPage.navigateToApplication();
+        loginPage.navigateToApplication();
         logger.info("User navigated to application.");
     }
 
@@ -89,8 +90,10 @@ public class LoginSteps {
     @Then("the user should see the {string} overview1")
     public void verifyDashboardRedirection1(String expectedHeader) {
         try {
-            // Intentionally failing assertion retained from the original code
-            Assert.assertTrue(false, "Dashboard failed to load!");
+            Assert.assertTrue(
+                    dashboardPage.isDashboardVisible(),
+                    "Dashboard failed to load!"
+            );
 
             logger.info("Dashboard page is visible.");
 
@@ -118,10 +121,8 @@ public class LoginSteps {
         loginPage.enterCredentials(user, pass);
         loginPage.clickLogin();
 
-        logger.info(
-                "User logs in to application using user name: {}, password: {}",
-                user, pass
-        );
+        // Never log passwords
+        logger.info("User submitted login credentials.");
     }
 
     @Then("the user should see the {string} error message")
@@ -132,15 +133,15 @@ public class LoginSteps {
 
         logger.info("Expected error message is displayed and verified.");
     }
-    
+
     @Then("the user should see the required field validation")
     public void verifyRequiredFieldValidation() {
         Assert.assertTrue(
-            loginPage.isRequiredFieldValidationDisplayed(),
-            "Required field validation was not displayed!"
+                loginPage.isRequiredFieldValidationDisplayed(),
+                "Required field validation was not displayed!"
         );
     }
-    
+
     @When("the user logs out")
     public void userLogsOut() {
         dashboardPage.clickProfileMenu();
@@ -150,8 +151,8 @@ public class LoginSteps {
     @Then("the user should be redirected to the login page")
     public void verifyLoginPageAfterLogout() {
         Assert.assertTrue(
-            loginPage.isLoginPageVisible(),
-            "User was not redirected to the login page!"
+                loginPage.isLoginPageVisible(),
+                "User was not redirected to the login page!"
         );
     }
 }
