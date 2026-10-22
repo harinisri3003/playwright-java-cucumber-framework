@@ -103,4 +103,5 @@ The GitHub Actions workflow runs on pushes to the `main` branch, pull requests t
 **Harini Sri**
 
 GitHub: [harinisri3003](https://github.com/harinisri3003)
+LinkedIn: [harinisri3003](https://www.linkedin.com/in/harini-sri-s/)
 
