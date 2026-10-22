@@ -3,7 +3,6 @@ package com.qa.utils;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.qa.utils.ExcelUtility.DataManager;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -153,7 +152,6 @@ public class FailedLocatorCollector {
             File outputDir = new File("test-output");
             if (!outputDir.exists()) outputDir.mkdirs();
 
-            // Timestamp in filename = unique file per run, easy to sort chronologically
             String date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("ddMMyyyy_HHmmss"));
             String fileName = "failedLocators_" + date + ".json";
 

@@ -1,9 +1,6 @@
 package com.qa.hooks;
 
 import com.microsoft.playwright.BrowserContext;
-import com.microsoft.playwright.Page;
-import com.microsoft.playwright.Tracing;
-
 import com.qa.contexts.TestContext;
 import com.qa.testutilities.TestProofsCollection;
 import com.qa.utils.ConfigLoader;
@@ -13,152 +10,110 @@ import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.Scenario;
 import io.cucumber.java.Status;
-import io.qameta.allure.Allure;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class ApplicationHooks {
 
-    private static final Logger logger =
-            LoggerFactory.getLogger(ApplicationHooks.class);
+	private static final Logger logger = LoggerFactory.getLogger(ApplicationHooks.class);
 
-    private final TestContext testContext;
+	private final TestContext testContext;
 
-    public ApplicationHooks(
-            TestContext testContext,
-            TestProofsCollection stepHelper) {
-        this.testContext = testContext;
-    }
+	public ApplicationHooks(TestContext testContext, TestProofsCollection stepHelper) {
+		this.testContext = testContext;
+	}
 
-    @Before(order = 0)
-    public void setupScenario(Scenario scenario) {
-        testContext.setScenarioName(scenario.getName());
-        FailedLocatorCollector.setScenarioName(scenario.getName());
+	@Before(order = 0)
+	public void setupScenario(Scenario scenario) {
+		testContext.setScenario(scenario);
+		testContext.setScenarioName(scenario.getName());
+		FailedLocatorCollector.setScenarioName(scenario.getName());
 
-        logger.info("SCENARIO STARTED: {}", scenario.getName());
-    }
+		logger.info("Starting scenario: {}", scenario.getName());
+	}
 
-    @Before(order = 1)
-    public void startTrace() {
-        Page page = testContext.getPage();
+	@Before(order = 1)
+	public void startTrace() {
+		testContext.getPage();
 
-        page.context().tracing().start(
-                new Tracing.StartOptions()
-                        .setScreenshots(true)
-                        .setSnapshots(true)
-                        .setSources(true)
-        );
-    }
+		BrowserContext context = testContext.getDriverFactory().getTlBrowserContext().get();
 
-    @After(order = 3)
-    public void captureScenarioScreenshot(Scenario scenario) {
-        String property;
+		if (context == null) {
+			logger.warn("Browser context is unavailable; skipping trace.");
+			return;
+		}
 
-        if (scenario.getStatus() == Status.FAILED) {
-            property = "screenshot.on.scenario.failure";
-        } else if (scenario.getStatus() == Status.PASSED) {
-            property = "screenshot.on.scenario.success";
-        } else if (scenario.getStatus() == Status.SKIPPED) {
-            property = "screenshot.on.scenario.skipped";
-        } else {
-            return;
-        }
+		context.tracing().start(new com.microsoft.playwright.Tracing.StartOptions().setScreenshots(true)
+				.setSnapshots(true).setSources(true));
+	}
 
-        boolean enabled = Boolean.parseBoolean(
-                ConfigLoader.getInstance().getOptionalProp(property)
-        );
+	@After(order = 3)
+	public void captureScenarioScreenshot(Scenario scenario) {
+		String outcome = scenario.getStatus().name().toLowerCase();
 
-        if (!enabled) {
-            return;
-        }
+		boolean captureFailure = Boolean
+				.parseBoolean(ConfigLoader.getInstance().getOptionalProp("screenshot.on.scenario.failure"));
 
-        try {
-            Page page = testContext.getPage();
+		boolean captureSuccess = Boolean
+				.parseBoolean(ConfigLoader.getInstance().getOptionalProp("screenshot.on.scenario.success"));
 
-            byte[] screenshot = page.screenshot(
-                    new Page.ScreenshotOptions()
-                            .setFullPage(true)
-                            .setTimeout(15000)
-            );
+		boolean captureSkipped = Boolean
+				.parseBoolean(ConfigLoader.getInstance().getOptionalProp("screenshot.on.scenario.skipped"));
 
-            scenario.attach(
-                    screenshot,
-                    "image/png",
-                    "Scenario Screenshot"
-            );
+		boolean shouldCapture = (scenario.isFailed() && captureFailure)
+				|| (scenario.getStatus() == Status.PASSED && captureSuccess)
+				|| (scenario.getStatus() == Status.SKIPPED && captureSkipped);
 
-        } catch (Exception e) {
-            logger.warn(
-                    "Could not capture screenshot for '{}': {}",
-                    scenario.getName(),
-                    e.getMessage()
-            );
-        }
-    }
+		if (shouldCapture) {
+			try {
+				com.microsoft.playwright.Page page = testContext.getPage();
 
-    @After(order = 2)
-    public void captureTrace(Scenario scenario) {
-        BrowserContext context = testContext.getDriverFactory()
-                .getTlBrowserContext().get();
+				if (page != null && !page.isClosed()) {
+					scenario.attach(page.screenshot(), "image/png", "Scenario Screenshot - " + outcome);
+				}
+			} catch (Exception e) {
+				logger.warn("Could not capture scenario screenshot: {}", e.getMessage());
+			}
+		}
+	}
 
-        if (context == null) {
-            return;
-        }
+	@After(order = 2)
+	public void captureTrace(Scenario scenario) {
+		BrowserContext context = testContext.getDriverFactory().getTlBrowserContext().get();
 
-        try {
-            if (!scenario.isFailed()) {
-                context.tracing().stop();
-                return;
-            }
+		if (context == null) {
+			return;
+		}
 
-            Path tracePath = Paths.get(
-                    "test-output",
-                    "traces",
-                    scenario.getName().replaceAll(
-                            "[^a-zA-Z0-9._-]", "_"
-                    ) + ".zip"
-            );
+		try {
+			if (scenario.isFailed()) {
+				Path traceDirectory = Paths.get("test-output", "traces");
+				Files.createDirectories(traceDirectory);
 
-            Files.createDirectories(tracePath.getParent());
+				String safeName = scenario.getName().replaceAll("[^a-zA-Z0-9._-]", "_");
 
-            context.tracing().stop(
-                    new Tracing.StopOptions().setPath(tracePath)
-            );
+				Path tracePath = traceDirectory.resolve(safeName + ".zip");
 
-            try (InputStream input = Files.newInputStream(tracePath)) {
-                Allure.addAttachment(
-                        "Playwright Trace",
-                        "application/zip",
-                        input,
-                        ".zip"
-                );
-            }
+				context.tracing().stop(new com.microsoft.playwright.Tracing.StopOptions().setPath(tracePath));
 
-            logger.info("Playwright trace saved: {}", tracePath);
+				logger.info("Playwright trace saved: {}", tracePath);
+			} else {
+				context.tracing().stop();
+			}
+		} catch (Exception e) {
+			logger.warn("Could not save Playwright trace: {}", e.getMessage());
+		}
+	}
 
-        } catch (Exception e) {
-            logger.error(
-                    "Could not capture trace for '{}'",
-                    scenario.getName(),
-                    e
-            );
-        }
-    }
+	@After(order = 0)
+	public void quitBrowser(Scenario scenario) {
+		logger.info("Scenario '{}' finished with status: {}", scenario.getName(), scenario.getStatus());
 
-    @After(order = 0)
-    public void quitBrowser(Scenario scenario) {
-        logger.info(
-                "SCENARIO FINISHED: {} | Status: {}",
-                scenario.getName(),
-                scenario.getStatus()
-        );
-
-        testContext.getDriverFactory().closePlaywright();
-    }
+		testContext.getDriverFactory().closePlaywright();
+	}
 }

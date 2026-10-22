@@ -1,6 +1,5 @@
 package com.qa.runners;
 
-import com.qa.testutilities.AllureEnvironmentManager;
 import com.qa.utils.ConfigLoader;
 import com.qa.utils.FailedLocatorCollector;
 
@@ -18,7 +17,6 @@ import org.testng.annotations.DataProvider;
     tags = "not @Ignore",
     plugin = {
         "pretty",
-        "io.qameta.allure.cucumber7jvm.AllureCucumber7Jvm",
         "html:target/cucumber-reports/cucumber.html",
         "json:target/cucumber-reports/cucumber.json",
         "rerun:target/failed_scenarios.txt"
@@ -40,7 +38,6 @@ public class TestRunner extends AbstractTestNGCucumberTests {
     @BeforeSuite(alwaysRun = true)
     public void setupSuite() {
         ConfigLoader.getInstance();
-        AllureEnvironmentManager.writeEnvironmentInfo();
     }
 
     @AfterSuite(alwaysRun = true)

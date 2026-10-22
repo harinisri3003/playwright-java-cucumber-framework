@@ -1,10 +1,7 @@
 package com.qa.pages;
 
 import com.microsoft.playwright.Page;
-import com.qa.testutilities.AllureEnvironmentManager;
 import com.qa.utils.ElementUtils;
-
-import org.testng.annotations.BeforeSuite;
 
 /**
  * BasePage — The parent class that all Page Object classes extend.
