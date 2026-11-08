@@ -29,7 +29,6 @@ auth.json
 allure-results/
 allure-report/
 test-output/
-screenshots/
 videos/
 traces/
 allure-report-smoke/
