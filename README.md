@@ -1,107 +1,186 @@
+# 🎭 Playwright Java Automation Framework
 
-# Playwright Java Automation Framework
+<p align="center">
+  <img src="https://img.shields.io/badge/Java-21-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java"/>
+  <img src="https://img.shields.io/badge/Playwright-Automation-2EAD33?style=for-the-badge&logo=playwright&logoColor=white" alt="Playwright"/>
+  <img src="https://img.shields.io/badge/Cucumber-BDD-23D96C?style=for-the-badge&logo=cucumber&logoColor=white" alt="Cucumber"/>
+  <img src="https://img.shields.io/badge/Maven-Build-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white" alt="Maven"/>
+</p>
 
-A UI test automation framework built using Java, Playwright, Cucumber BDD, and Maven. The framework supports behavior-driven test scenarios, JSON-based test data management, automated test execution, and CI integration through GitHub Actions.
+A Java-based UI test automation framework built using **Playwright, Cucumber BDD, and Maven**. Designed to support reusable browser automation, behavior-driven scenarios, JSON-based test data management, and automated test reporting.
 
-## Tech Stack
+---
 
-- **Language:** Java
-- **Browser Automation:** Playwright
-- **BDD:** Cucumber, Gherkin
-- **Test Execution:** TestNG, Maven
-- **Test Data:** JSON, Jackson
-- **CI/CD:** GitHub Actions
-- **Reporting:** Cucumber HTML Report
+## ✨ Key Features
 
-## Key Features
+| Feature | Description |
+|---|---|
+| 🌐 Browser Automation | UI automation using Playwright with Java |
+| 🥒 BDD Framework | Readable test scenarios using Cucumber and Gherkin |
+| ♻️ Reusability | Shared setup and reusable step definitions |
+| 📂 Test Data | JSON-based test data management using Jackson |
+| 🚀 Test Execution | Centralized execution through Cucumber TestRunner |
+| 📊 Reporting | Cucumber HTML execution reports |
 
-- Browser UI automation using Playwright with Java.
-- BDD scenarios written in Gherkin feature files.
-- Reusable step definitions and shared test setup.
-- JSON-based test data management using Jackson.
-- Maven-based test execution through a single Cucumber `TestRunner`.
-- GitHub Actions workflow for automated test execution.
-- Cucumber HTML report generated after test execution.
+---
 
-## Project Structure
+## 🔄 Framework Workflow
+
+```mermaid
+flowchart TD
+    A["🥒 Feature Files<br/>Gherkin Scenarios"] --> B["⚙️ Step Definitions"]
+    C["📂 JSON Test Data<br/>Jackson"] --> B
+    B --> D["🎭 Playwright Java"]
+    D --> E["🌐 Browser Execution"]
+    E --> F["📊 Cucumber HTML Report"]
+```
+
+---
+
+## 📸 Framework Showcase
+
+### 🌐 Browser Automation
+
+<p align="center">
+  <img src="screenshots/browser-automation.png" width="850" alt="Playwright Browser Automation"/>
+</p>
+
+### 🥒 BDD Feature Scenarios
+
+<p align="center">
+  <img src="screenshots/bdd-feature.png" width="850" alt="Cucumber BDD Feature Scenarios"/>
+</p>
+
+### 📊 Cucumber HTML Report
+
+<p align="center">
+  <img src="screenshots/cucumber-report.png" width="850" alt="Cucumber HTML Execution Report"/>
+</p>
+
+---
+
+## 🛠️ Technology Stack
+
+**Programming Language**
+
+![Java](https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white)
+
+**Browser Automation & BDD**
+
+![Playwright](https://img.shields.io/badge/Playwright-2EAD33?style=flat-square&logo=playwright&logoColor=white)
+![Cucumber](https://img.shields.io/badge/Cucumber-23D96C?style=flat-square&logo=cucumber&logoColor=white)
+![Gherkin](https://img.shields.io/badge/Gherkin-5BAF50?style=flat-square)
+
+**Test Execution & Data Management**
+
+![Maven](https://img.shields.io/badge/Maven-C71A36?style=flat-square&logo=apachemaven&logoColor=white)
+![TestNG](https://img.shields.io/badge/TestNG-FF6C37?style=flat-square)
+![JSON](https://img.shields.io/badge/JSON-000000?style=flat-square&logo=json&logoColor=white)
+![Jackson](https://img.shields.io/badge/Jackson-4051B5?style=flat-square)
+
+**Reporting**
+
+![Cucumber HTML Report](https://img.shields.io/badge/Cucumber-HTML%20Report-23D96C?style=flat-square)
+
+---
+
+## 📁 Project Structure
 
 ```text
-playwright-cucumber-java-framework/
-├── .github/
-│   └── workflows/
-│       └── smoke_tests.yml
+playwright-java-cucumber-framework/
+│
+├── screenshots/
+│   ├── browser-automation.png
+│   ├── bdd-feature.png
+│   └── cucumber-report.png
+│
 ├── src/
-│   ├── test/
-│   │   ├── java/
-│   │   │   └── com/qa/
-│   │   │       ├── runners/
-│   │   │       │   └── TestRunner.java
-│   │   │       ├── stepdefinitions/
-│   │   │       └── ...
-│   │   └── resources/
-│   │       ├── features/
-│   │       └── testdata/
-│   │           └── json/
-│   │               └── login-data.json
+│   └── test/
+│       ├── java/
+│       │   └── com/qa/
+│       │       ├── runners/
+│       │       │   └── TestRunner.java
+│       │       ├── stepdefinitions/
+│       │       └── ...
+│       │
+│       └── resources/
+│           ├── features/
+│           └── testdata/
+│               └── json/
+│                   └── login-data.json
+│
 ├── pom.xml
 └── README.md
 ```
 
-## Prerequisites
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
 
 - JDK 21
 - Apache Maven
 - Git
-- Eclipse IDE or another Java IDE
+- Eclipse IDE or any Java IDE
 
-## Setup
+### Installation
 
-1. Clone the repository:
+**1. Clone the repository**
 
-   ```bash
-   git clone https://github.com/harinisri3003/playwright-java-cucumber-framework.git
-   ```
+```bash
+git clone https://github.com/harinisri3003/playwright-java-cucumber-framework.git
+```
 
-2. Navigate to the project directory:
+**2. Navigate to the project directory**
 
-   ```bash
-   cd playwright-cucumber-java-framework
-   ```
+```bash
+cd playwright-java-cucumber-framework
+```
 
-3. Install dependencies and run the tests:
+**3. Execute the automation tests**
 
-   ```bash
-   mvn clean test
-   ```
+```bash
+mvn clean test
+```
 
-The GitHub Actions workflow installs Chromium and executes the tests in headless mode.
+---
 
-## Test Reports
+## 📊 Test Reports
 
-After execution, the Cucumber HTML report is available at:
+Cucumber HTML reports are generated after test execution.
 
-`target/cucumber-reports/cucumber.html`
+**Report Location**
 
-To view it, open the HTML file in a web browser.
+```text
+target/cucumber-reports/cucumber.html
+```
 
-GitHub Actions also uploads the report as a workflow artifact when it is generated.
+Open the generated HTML file in a browser to view scenario execution results and test details.
 
-## Test Data
+---
 
-Test data is maintained in JSON files under:
+## 📂 Test Data Management
 
-`src/test/resources/testdata/json/`
+Test data is maintained separately in JSON files.
 
-Jackson is used to read the JSON test data.
+```text
+src/test/resources/testdata/json/
+```
 
-## CI Workflow
+**Jackson** is used to read and manage JSON-based test data.
 
-The GitHub Actions workflow runs on pushes to the `main` branch, pull requests targeting `main`, and manual triggers.
+---
 
-## Author
+## 👩‍💻 Author
 
 **Harini Sri**
 
-GitHub: [harinisri3003](https://github.com/harinisri3003)
-LinkedIn: [harinisri3003](https://www.linkedin.com/in/harini-sri-s/)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=github&logoColor=white)](https://github.com/harinisri3003)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat-square&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/harini-sri-s/)
 
+---
+
+<p align="center">
+  <b>✨ Automate. Test. Improve. Repeat. 🚀</b>
+</p>
