@@ -1,55 +1,15 @@
 # 🎭 Playwright Java Automation Framework
 
-A **Java-based UI Automation Framework** built with Playwright, Cucumber BDD, and Maven, featuring reusable test steps, JSON test data, and HTML reporting.
+A **Java-based UI Automation Framework** built with Playwright, Cucumber BDD, and Maven, featuring reusable test steps, JSON-based test data management, and HTML reporting.
 
 ## ✨ Key Features
 
-| 🌟 Feature | 📝 Description |
-|:---|:---|
-| 🌐 Browser Automation | UI automation with Playwright |
-| 🥒 BDD Testing | Readable scenarios using Cucumber & Gherkin |
-| ♻️ Reusable Steps | Modular and reusable step definitions |
-| 📂 JSON Test Data | Data management using Jackson |
-| 🚀 Test Execution | Centralized execution using Maven |
-| 📊 HTML Reporting | Execution reports with Cucumber |
-
-## 🛠️ Tech Stack
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java"/>
-  <img src="https://img.shields.io/badge/Playwright-2EAD33?style=for-the-badge&logo=playwright&logoColor=white" alt="Playwright"/>
-  <img src="https://img.shields.io/badge/Cucumber-23D96C?style=for-the-badge&logo=cucumber&logoColor=white" alt="Cucumber"/>
-  <img src="https://img.shields.io/badge/Gherkin-5B8C5A?style=for-the-badge" alt="Gherkin"/>
-  <img src="https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white" alt="Maven"/>
-  <img src="https://img.shields.io/badge/TestNG-FFB000?style=for-the-badge" alt="TestNG"/>
-  <img src="https://img.shields.io/badge/JSON-000000?style=for-the-badge&logo=json&logoColor=white" alt="JSON"/>
-  <img src="https://img.shields.io/badge/Jackson-4B6F44?style=for-the-badge" alt="Jackson"/>
-</p>
-
-| Category | Technologies |
-|:---|:---|
-| 💻 Programming | Java |
-| 🌐 Automation | Playwright |
-| 🥒 BDD | Cucumber, Gherkin |
-| ⚙️ Build & Execution | Maven, TestNG |
-| 📂 Test Data | JSON, Jackson |
-| 📊 Reporting | Cucumber HTML Reports |
-
-## 🏗️ Framework Workflow
-
-```text
-       🥒 Feature Files
-              ↓
-       📝 Step Definitions
-              ↓
-     📂 JSON Test Data (Jackson)
-              ↓
-       🎭 Playwright Java
-              ↓
-       🌐 Browser Execution
-              ↓
-       📊 HTML Report
-```
+- 🌐 **Browser Automation:** UI automation using Playwright Java.
+- 🥒 **BDD Testing:** Readable scenarios using Cucumber and Gherkin.
+- ♻️ **Reusable Steps:** Modular and reusable step definitions.
+- 📂 **JSON Test Data:** Centralized test data management using Jackson.
+- 🚀 **Test Execution:** Centralized test execution using Maven and TestNG.
+- 📊 **HTML Reporting:** Cucumber reports with execution details and failure information.
 
 ## 📸 Framework Showcase
 
@@ -70,6 +30,22 @@ A **Java-based UI Automation Framework** built with Playwright, Cucumber BDD, an
 <p align="center">
   <img src="screenshots/cucumber-report.png" width="90%" alt="Cucumber HTML Report"/>
 </p>
+
+## 🏗️ Framework Workflow
+
+```text
+       🥒 Feature Files
+              ↓
+       📝 Step Definitions
+              ↓
+     📂 JSON Test Data (Jackson)
+              ↓
+       🎭 Playwright Java
+              ↓
+       🌐 Browser Execution
+              ↓
+       📊 HTML Report
+```
 
 ## 📂 Project Structure
 
@@ -146,19 +122,26 @@ JSON test data is maintained in:
 src/test/resources/testdata/json/
 ```
 
-Jackson handles JSON data reading and processing.
+Jackson handles JSON data reading and processing, keeping test data separate from automation logic.
 
----
+## 🛠️ Tech Stack
 
-## 👩‍💻 Let's Connect!
-
-**Harini Sri**
-
-<p align="left">
-  <a href="https://github.com/harinisri3003">
-    <img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub"/>
-  </a>
-  <a href="https://www.linkedin.com/in/harini-sri-s/">
-    <img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn"/>
-  </a>
+<p align="center">
+  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" alt="Java"/>
+  <img src="https://img.shields.io/badge/Playwright-2EAD33?style=for-the-badge&logo=playwright&logoColor=white" alt="Playwright"/>
+  <img src="https://img.shields.io/badge/Cucumber-23D96C?style=for-the-badge&logo=cucumber&logoColor=white" alt="Cucumber"/>
+  <img src="https://img.shields.io/badge/Gherkin-5B8C5A?style=for-the-badge" alt="Gherkin"/>
+  <img src="https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white" alt="Maven"/>
+  <img src="https://img.shields.io/badge/TestNG-FFB000?style=for-the-badge" alt="TestNG"/>
+  <img src="https://img.shields.io/badge/JSON-000000?style=for-the-badge&logo=json&logoColor=white" alt="JSON"/>
+  <img src="https://img.shields.io/badge/Jackson-4B6F44?style=for-the-badge" alt="Jackson"/>
 </p>
+
+| Category | Technologies |
+|:---|:---|
+| Programming | Java |
+| Automation | Playwright |
+| BDD | Cucumber, Gherkin |
+| Build & Execution | Maven, TestNG |
+| Test Data | JSON, Jackson |
+| Reporting | Cucumber HTML Reports |
